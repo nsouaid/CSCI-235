@@ -1,3 +1,9 @@
+/*
+courtesy of Thordur E. Halldorsson, KIT as I work my way through examples to understand ADTs and the likes. copyright (c) 2013
+
+any additional code is my own
+*/
+
 #include <iostream>
 using namespace std;
 
