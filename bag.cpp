@@ -7,81 +7,37 @@ any additional code is my own
 #include <iostream>
 using namespace std;
 
-typedef int Item; //only for linked lists of int data
-
-/*we can use the linked list as an abstract data type
-
-	imagine the LINKED_LIST to be a structure deep in memory land. it doesn't matter where the data goes, it only matters that we at least keep track of one part so that we don't
-
-			lose
-
-
-	any data.
-
-
-*/
+typedef int Item;
 
 class LINKED_LIST {
 	private:
-		
 		struct node {
-			Item item;
-			node * next;
+			Item item; node * next;
 			node(Item x, node * t) {
-				item = x;
-				next = t;
+				item = x; next = t;
 			}
 		};
-
-		//this creates a node pointer, and "link" is the name
 		typedef node * link;
-
-		//created the head of the LINKED_LIST
 		link head;		
 	
 	public:
- 
-		//constructor for the head part as we've already filled the constructor for the node within the node
 		LINKED_LIST(){
 			head = NULL;
 		}
-
-		//now our functions....
-
 		bool isEmpty() {
 			return (head==NULL);
 		}
-
-		//remember what evaluates first. 
-		//1. a new node is created
-		//2. with the arguments x from the user and head as the
-		// address that head is already pointing to
-		//3. head now gets this #####new node!#####
 		void AddHead(Item x){
-
 			head = new node(x, head);
 		}
-
-		//returning an int
 		Item RemoveHead() {
-			//create a new int that gets the integer that head is pointing to
 			Item v = head ->item;
-			
-			//create a new node pointer to get the address of the node after the 1st one
 			link t = head ->next;
-		
-			//remove head (along with it the first node)
 			delete head;
-			
-			//head now gets to be what t was pointing to
 			head = t;
-		
-			//give us the integer that was part of that specific node
 			return v;
 		}
-
 		Item RemoveTail() {
-			//traverse the list to find the last node
 			link t = head;
 			link prev = NULL;
 
@@ -90,8 +46,6 @@ class LINKED_LIST {
 				t = t->next;
 			}
 			Item v = t -> item;
-	
-			//did we remove the last node?
 			if (prev == NULL) {
 				head = NULL;
 			}
@@ -103,28 +57,48 @@ class LINKED_LIST {
 		}
 };
 
+class STACK {
+
+	//the first step is to create the "prototypes" for the methods we will use. We can then either place these in an "implementation" file or we can place them within the class function itself. If this class is in a header file, then we need to "#include" the header file in that implementation file.
+
+	private:
+		LINKED_LIST stackll; //this initializes in its constructor
+
+	public:
+		STACK(){
+		} //basically, this is empty because WITHIN the private classifier, the linked list itself has a private identifier that is initialized once called.
+		bool isEmpty() {
+		return stackll.isEmpty(); //this is another function that has been "forwarded"
+		}
+		void push(Item x);
+		Item Pop();
+};
+
+
 int main() {
 
 	
+	STACK myStack; //remember, if it's a default constructor, we should not have a pair of parenthesis when we declare it.
+
+	myStack.push(8);
+	myStack.push(3);
+
+	int i = myStack.pop(); //since this is a "stack" we should expect to see that the last "Item" (or, integer) that was given to the computer is the first "Item" we receive. We should, in this case, expect to see the number 3 written to the console.
+
+	cout << "the last number that we put in the computer is " << i << "." << endl;
+
 	LINKED_LIST myList;
 	
 	myList.AddHead(10);
 	myList.AddHead(12);
-	myList.AddHead(12);
-	myList.AddHead(12);
-	myList.AddHead(12);
-
+	
 	int j = myList.RemoveHead();
 	int k = myList.RemoveHead();
-	int l = myList.RemoveHead();
-	int m = myList.RemoveHead();
-	int n = myList.RemoveHead();
+	
 
 	cout << "the numbers:" << endl;
 	cout << "j: " << j << endl;
 	cout << "k: " << k << endl;
-	cout << "l: " << l << endl;
-	cout << "m: " << m << endl;
-	cout << "n: " << n << endl;
+
 	return 0;
 }
