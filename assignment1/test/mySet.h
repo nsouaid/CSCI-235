@@ -6,8 +6,19 @@
 
 #include "SetInterface.h"
 
+//the following is the derived class?
 template<class ItemType>
 class Set : public SetInterface<ItemType> {
+	public:
+		Set();
+		int GetCurrentSize() const;
+		bool IsEmpty() const;
+		bool Add(const ItemType& new_entry);
+		bool Remove(const ItemType& an_entry);
+		void Clear();
+		bool Contains(const ItemType& an_entry) const;
+		vector<ItemType> ToVector() const;
+
 	private:
 		static const int kDefaultSetSize_ = 6;
 		ItemType items_[kDefaultSetSize_]; // array of set items
@@ -16,17 +27,7 @@ class Set : public SetInterface<ItemType> {
   		//return the index of the target or return -1. don't change anything (const)
 		int GetIndexOf(const ItemType& target) const;   
 
-	public:
-		Set();
-		int GetCurrentSize() const;
-		bool IsEmpty() const;
-		bool Add(const ItemType& new_entry);
-		bool Remove(const ItemType& an_entry);
-		void Clear();
-		bool Contains(const ItemType& an_ntry) const;
-		vector<ItemType> ToVector() const;
-};
 
-#include "mySet.cpp"
+};
 
 #endif  // TEACH_CSCI235_SETADT_SET_H_

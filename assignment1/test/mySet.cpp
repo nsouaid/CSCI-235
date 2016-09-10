@@ -1,14 +1,11 @@
-// Created by Frank M. Carrano and Tim Henry.
-// Copyright (c) 2013 __Pearson Education__. All rights reserved.
-// Modified by Ioannis Stamos
 /**	@file mySet.cpp (same as ArraySet) */
 
-#include "mySet.h"
 #include <cstddef>
+#include "mySet.h"
 
 //default constructor
 template<class ItemType>
-Set<ItemType>::Set() : item_count_(0), max_items_(kDefaultSetSize_) {
+Set <ItemType>::Set() : item_count_(0), max_items_(kDefaultSetSize_) {
 }
 
 /*constructor addition to construct a Set for a single item

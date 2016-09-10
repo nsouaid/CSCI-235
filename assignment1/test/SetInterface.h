@@ -11,6 +11,10 @@ using namespace std;
 template<class ItemType>
 class SetInterface {
 	public:
+
+		//should not include a constructr because it's not meant to be instatiated
+
+
 		/** Gets the current number of entries in this set.
 			@return The integer number of entries currently in the set. */
 		virtual int GetCurrentSize() const = 0;
