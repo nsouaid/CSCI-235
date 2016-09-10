@@ -11,6 +11,7 @@ MYSET<ItemType>::MYSET() : item_count_(0), max_items_(kDefaultSetSize_) {
 template<class ItemType>
 MYSET<ItemType>::MYSET(const ItemType &an_Item) {
 	items_[0]= an_Item;
+	item_count_ ++;
 }
 
 //obtains the current size 
@@ -31,14 +32,12 @@ bool MYSET<ItemType>::Add(const ItemType& new_entry) {
 	bool has_room_to_add = item_count_ < max_items_;
 	bool duplicate = false;
 	bool retval = false;
-		
-	for (int i = 0; i < item_count_; i++) {
-		if (items_[i] == new_entry) {
-			duplicate = true;
-		}
-		else {
-			duplicate = false;
-		}
+
+	if (Contains(new_entry)) {
+		duplicate = true;
+	}
+	else {
+		duplicate = false;
 	}
 	
 	if ((has_room_to_add) && (duplicate == false)) {
@@ -85,7 +84,8 @@ vector<ItemType> MYSET<ItemType>::ToVector() const {
 	return set_contents;
 }
 
-template<class ItemType> int MYSET<ItemType>::GetIndexOf(const ItemType& target) const {
+template<class ItemType> 
+int MYSET<ItemType>::GetIndexOf(const ItemType& target) const {
 	bool found = false;
 	int result = -1;
 	int search_index = 0;
