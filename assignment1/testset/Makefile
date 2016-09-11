@@ -38,8 +38,8 @@ LIBS_ALL =  -L/usr/lib -L/usr/local/lib $(MATH_LIBS)
 
 
 #FIRST PROGRAM
-ALL_OBJ1=mymain.o
-PROGRAM_1=testSetProgram
+ALL_OBJ1=TestSet.o
+PROGRAM_1=testset
 $(PROGRAM_1): $(ALL_OBJ1)
 	g++ $(C++FLAG) -o $(EXEC_DIR)/$@ $(ALL_OBJ1) $(INCLUDES) $(LIBS_ALL)
 

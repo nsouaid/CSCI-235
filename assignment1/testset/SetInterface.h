@@ -49,4 +49,5 @@ class SetInterface {
 			@return  A vector containing all the entries in the set. */
 		virtual vector<ItemType> ToVector() const = 0;
 };
+
 #endif
