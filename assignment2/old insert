@@ -1,0 +1,40 @@
+//old insert
+	if (((new_entry1 < 10) && (new_entry1 > -1)) && ((new_entry2 < 100) && (new_entry2 >-1))) {
+
+		//this object Node should point to a new dynamic node that gets the entries and a nullptr
+		Node<ItemType>* last_node_ptr = new Node<ItemType>(new_entry1, new_entry2);
+	
+		//if the head_ptr_ in the list is pointing to a null pointer, 
+		//then the head_ptr_ should get what next_node_ptr is 
+		//pointing to (the dynamically created Node with the entries).
+		if (head_ptr_ == nullptr) {
+			//make sure that the leading coefficient is not 0
+			if ((last_node_ptr->GetCoefficient())== 0) {
+				cout << "Could not add your digit" << endl;
+				return false;
+			}
+			else {
+				head_ptr_ = last_node_ptr;
+			}
+		}
+		else {
+			//create a temporary Node to travel the list, 
+			//have it point to the first item in the list (what
+			//head_ptr_ is pointing to
+			Node <ItemType> * travelptr = head_ptr_;
+			//while the Node that travelptr is pointing to's
+			//next compartment is not pointing to null,
+			//this means that it has another Node to travel through
+			while(travelptr->GetNext()!= nullptr) {
+				//go to the next Node
+				travelptr = travelptr->GetNext();
+			}
+			//once it reaches that last Node, have it point
+			//to the dynamically created Node that we made earlier, only if their exponents are different
+			//if ((travelptr->GetExponent()) == (last_node_ptr->GetExponent())) {
+			travelptr->SetNext(last_node_ptr);
+		}
+		item_count_++;
+		return true;
+	}
+	else return false;
