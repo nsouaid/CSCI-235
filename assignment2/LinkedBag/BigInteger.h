@@ -24,7 +24,7 @@ class BigInteger : public BagInterface<ItemType> {
 
 		// @return either a pointer to the node containing a given entry
 		// or the null pointer if the entry is not in the bag.
-		Node<ItemType>* GetPointerTo(const ItemType& target) const;
+		Node<ItemType>* GetPointerTo(const ItemType& an_entry1, const ItemType& an_entry2) const;
 
 		// @param a_bag a given bag.
 		// Allocates space and copies all the nodes from a_bag.
@@ -34,7 +34,7 @@ class BigInteger : public BagInterface<ItemType> {
 
 	public:
 
-		//will not take arguments and will initialize the object to
+		//will not take arguments
 		BigInteger();
 		
 		//this copy constructor will take a BigInteger object and make another BigInteger object with the same contents
@@ -46,17 +46,35 @@ class BigInteger : public BagInterface<ItemType> {
 		//virtual destructor so that other classes are responsible for their own objects
 		virtual ~BigInteger();
 
-
+		//checks for empty bag
 		bool IsEmpty() const;
+
+		//obtains item count
 		int GetCurrentSize() const;
+
+		//insert new node/number	
 		bool Insert(const ItemType& new_entry1, const ItemType& new_entry2);
+
+		//emtpies bag
 		void Clear();
+
+		//determines frequency of given number (coefficient)
 		int GetFrequencyOf(const ItemType& an_entry) const;
-		bool Contains(const ItemType& an_entry) const;
+
+		//checks to see if a number (exponent and its coefficient) exist in the list
+		bool Contains(const ItemType& an_entry1, const ItemType& an_entry2) const;
+
+		//displays the number
 		void DisplayBigInteger () const;
+
+		//obtains the coefficient of a given exponent
 		int Coefficient (const int& exponent) const;
+
+		//changes the coefficient of a given exponent
 		bool ChangeCoefficient(int expon_, int newCoefficient_);
 
+		//checks to see if two numbers are equal
+		bool EqualsBigInteger (const BigInteger <ItemType>& number) const;
 };
 
 #include "BigInteger.cpp"

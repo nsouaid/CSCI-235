@@ -41,6 +41,7 @@ BigInteger<ItemType>& BigInteger<ItemType>::operator=(const BigInteger<ItemType>
 
 //---------------------------------------------------------------------------------------------------------------------------------------------
 
+//destructor
 template<class ItemType>
 BigInteger<ItemType>::~BigInteger() {
 	Clear();
@@ -158,19 +159,19 @@ int BigInteger<ItemType>::GetFrequencyOf(const ItemType& an_entry) const {
 //---------------------------------------------------------------------------------------------------------------------------------------------
 
 template<class ItemType>
-bool BigInteger<ItemType>::Contains(const ItemType& an_entry) const {
-	return (GetPointerTo(an_entry) != nullptr);
+bool BigInteger<ItemType>::Contains(const ItemType& an_entry1, const ItemType& an_entry2) const {
+	return (GetPointerTo(an_entry1, an_entry2) != nullptr);
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------
 
 //will return a nullptr unless it finds the entry given - in which case will return the pointer to that Node of that specific cofficient
 template<class ItemType>
-Node<ItemType>* BigInteger<ItemType>::GetPointerTo(const ItemType& an_entry) const {
+Node<ItemType>* BigInteger<ItemType>::GetPointerTo(const ItemType& an_entry1, const ItemType& an_entry2) const {
 
-	Node<ItemType> *current_ptr = head_ptr_;
+	Node<ItemType> * current_ptr = head_ptr_;
 	while (current_ptr != nullptr) {
-		if (an_entry == current_ptr->GetCoefficient())
+		if ((an_entry1 == current_ptr->GetExponent()) && (an_entry2 == current_ptr->GetCoefficient()))
 			return current_ptr;
 		else
 		current_ptr = current_ptr->GetNext();
@@ -259,14 +260,25 @@ void BigInteger<ItemType>::DisplayBigInteger () const {
 template<class ItemType>
 int BigInteger<ItemType>::Coefficient (const int& exponent) const {
 
-	//will return 0 if the exponent doesn't exist or if it's an exponent that wasn't inserted
-	int coefficient = 0;
+	//variable for the return value
+	int coefficient;
 
+	//create a traversal Node pointer, set to what head points to
 	Node<ItemType> * travelptr = head_ptr_;
-	while (travelptr != (nullptr)) {
+
+	//while not the end of the list
+	while (travelptr->GetNext() != nullptr) {
+
+		//check to see in each node if its exponent is equal to the given exponent
 		if ((travelptr->GetExponent()) == (exponent)) {
 			coefficient = travelptr->GetCoefficient(); 
 		}
+		//advance the pointer to next node
+		travelptr = travelptr->GetNext();
+	}
+	//for the last node
+	if ((travelptr->GetExponent()) == (exponent)) {
+			coefficient = travelptr->GetCoefficient(); 
 	}
 	return coefficient;
 }
@@ -274,27 +286,56 @@ int BigInteger<ItemType>::Coefficient (const int& exponent) const {
 //---------------------------------------------------------------------------------------------------------------------------------------------
 
 template<class ItemType>
-bool BigInteger<ItemType>::ChangeCoefficient(int expon_, int newCoefficient_) {
+bool BigInteger<ItemType>::ChangeCoefficient (int exponent, int newCoefficient_) {
 
 	Node<ItemType> * travelptr = head_ptr_;
-	while ((travelptr->GetNext()) != (nullptr)) {
-		if ((travelptr->GetExponent()) == (expon_)) {
-			if ((travelptr->GetCoefficient()) == (newCoefficient_)) {
+
+	while (travelptr->GetNext() != nullptr) {
+
+		if (travelptr->GetExponent() == exponent) {
+			travelptr->SetCoefficient(newCoefficient_);
 				return true;
-			}
-			else {
-				travelptr->SetCoefficient(newCoefficient_);
-				return true;
-			}
 		}
+		travelptr = travelptr->GetNext();
 	}
-	return false;
+	return true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------
 
+template<class ItemType>
+bool BigInteger<ItemType>::EqualsBigInteger (const BigInteger <ItemType>& number) const {
 
+	//create a pointer to access the first element
+	Node<ItemType> * peek = new Node <ItemType>;
+	peek = head_ptr_;
+	int exponent, coefficient, size2;
 
+	size2 = number.GetCurrentSize();
+
+	if (size2 <= item_count_) {
+		//until the last node is reached
+		while (peek->GetNext() != nullptr) {
+			
+			//for each node, obtain co and ex
+			coefficient = peek ->GetCoefficient();
+			exponent = peek ->GetExponent();
+	
+			//check if not in the second big int, return false
+			if (!number.Contains(exponent, coefficient)) {
+				return false;
+			}
+			//advance to next node
+			peek = peek ->GetNext();
+		}
+
+	}
+	else {
+		//in case they are of different lengths
+		return false;
+	}
+	return true;
+}
 
 
 

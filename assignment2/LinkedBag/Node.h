@@ -10,8 +10,11 @@ class Node {
 
 	private:
 
+		//data members
 		ItemType exponent_, coefficient_;
-		Node<ItemType>* next_; // Pointer to next node
+
+		//pointer to next node
+		Node<ItemType>* next_;
 
 	public:
 
