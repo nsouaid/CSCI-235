@@ -5,18 +5,17 @@ using namespace std;
 
 BigInteger<int>CreateBigIntegerFromInput() {
 
-	//create an empty bag
+//create an empty bag
 	BigInteger<int>theInteger;
+//variables
 	int exponent=0, coefficient, old=100;	
 	char exit = 'c';
 
 	cout << "Input your next big intger now." << endl;
 
-	//gather input
+//gather input
 	while (exit != 'q') {
-	
-
-		//maintain a sequential decrement with input
+	//maintain a sequential decrement with input
 		if (exponent <= old ) {
 			cout << "Enter the exponent: ";
 			cin >> exponent;
@@ -37,38 +36,39 @@ BigInteger<int>CreateBigIntegerFromInput() {
 }
 
 void TestBigInteger() {
-
-	int exponent, newcoefficient;
-
-	//use the copy constructor to create the bag we need
+//variables
+	int exponent, oldcoefficient, newcoefficient;
+//use the copy constructor to create the bag we need
 	BigInteger<int>testInteger(CreateBigIntegerFromInput());
-
+//display the integer
 	cout << "The big integer is ";
 	testInteger.DisplayBigInteger();
-
+//obtain exponent
 	cout << "\nPlease enter an exponent and we'll tell you the coefficient: ";
-	cin>> exponent;
-	
+	cin>> exponent;	
 	cout << "\nThe coefficient for " << exponent << " is "; 
-	cout << testInteger.Coefficient(exponent) << endl;
-
-	cout << "Now we'll change the coefficient. Please give a new number for the coefficient. Please only change a number that you have provided within the list: ";
+//display the soon-to-be-changed coefficient
+	oldcoefficient = testInteger.Coefficient(exponent);
+	cout << oldcoefficient;
+//obtain new coefficient
+	cout << "\nNow we'll change the coefficient. Please give a new number for the coefficient. Please only change a number that you have provided within the list: ";
 	cin >> newcoefficient;
-
-	testInteger.ChangeCoefficient(exponent, newcoefficient);
-
+//change the coefficient
+	testInteger.ChangeCoefficient(exponent, oldcoefficient, newcoefficient);
+//display the new integer
 	cout << "The new Big Integer is "; 
 	testInteger.DisplayBigInteger();
 }
 
 void TestEquals() {
-
+//create two integers using the copy constructor and other client function
 	BigInteger<int>number1(CreateBigIntegerFromInput());
 	BigInteger<int>number2(CreateBigIntegerFromInput());
-
+//if the numbers are equal, output true
 	if (number1.EqualsBigInteger(number2)) {
 		cout << "Your numbers are equal. TRUE" << endl;
 	}
+//else false
 	else {
 		cout << "The two numbers you entered are not equal. FALSE" << endl;
 	}
@@ -76,7 +76,9 @@ void TestEquals() {
 
 int main () {
 
-//	TestBigInteger();
+	cout << "\nFirst we will TestBigInteger():" << endl;
+	TestBigInteger();
+	cout << "\nNow we will TestEquals():" << endl;
 	TestEquals();
 
 	return 0;

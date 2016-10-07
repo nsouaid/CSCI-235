@@ -71,7 +71,7 @@ class BigInteger : public BagInterface<ItemType> {
 		int Coefficient (const int& exponent) const;
 
 		//changes the coefficient of a given exponent
-		bool ChangeCoefficient(int expon_, int newCoefficient_);
+		bool ChangeCoefficient(int exponent, int oldCoefficient, int newCoefficient);
 
 		//checks to see if two numbers are equal
 		bool EqualsBigInteger (const BigInteger <ItemType>& number) const;
