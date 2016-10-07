@@ -299,27 +299,23 @@ int BigInteger<ItemType>::Coefficient (const int& exponent) const {
 //---------------------------------------------------------------------------------------------------------------------------------------------
 
 template<class ItemType>
-bool BigInteger<ItemType>::ChangeCoefficient(int exponent, int oldCoefficient, int newCoefficient) {
-//check to see if the node exists
-	if (Contains(exponent, oldCoefficient)) {
-	//current node pointer points to head (n dynamic allocation here)
+bool BigInteger<ItemType>::ChangeCoefficient(int exponent, int newCoefficient) {
+
+	//current node pointer points to head
 		Node<ItemType> * travelptr = head_ptr_;
+
 	//while not end of list
 		while (travelptr->GetNext() != nullptr) {
 		//if we find the exponent, set the coefficient to new
 			if (travelptr->GetExponent() == exponent) {
 				travelptr->SetCoefficient(newCoefficient);
-					return true;
+				return true;
 			}
 		//advance pointer
 			travelptr = travelptr->GetNext();
 		}
+
 		return true;
-	}
-	else {
-		cout << "The number you entered does not exist in the list, could not change the coefficient." << endl;
-	}
-	return false;
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------
@@ -358,11 +354,6 @@ bool BigInteger<ItemType>::EqualsBigInteger (const BigInteger <ItemType>& number
 	}
 	return true;
 }
-
-
-
-
-
 
 
 

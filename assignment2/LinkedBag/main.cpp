@@ -54,7 +54,7 @@ void TestBigInteger() {
 	cout << "\nNow we'll change the coefficient. Please give a new number for the coefficient. Please only change a number that you have provided within the list: ";
 	cin >> newcoefficient;
 //change the coefficient
-	testInteger.ChangeCoefficient(exponent, oldcoefficient, newcoefficient);
+	testInteger.ChangeCoefficient(exponent, newcoefficient);
 //display the new integer
 	cout << "The new Big Integer is "; 
 	testInteger.DisplayBigInteger();

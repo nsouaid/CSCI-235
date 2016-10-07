@@ -51,10 +51,10 @@ class BagInterface {
 
 		/** Alters the integer, if the number already exists in the list
 		@pre expon_ must already exist in the list, user must keep track.
-		@param exponent, oldCoefficient, and newCoefficient The entries to locate and change.
+		@param exponent, and newCoefficient The entries to locate and change.
 		@post will have changed the coefficient data member to given.
 		@return True if alteration occured, false otherwise. */
-		virtual bool ChangeCoefficient(int exponent, int oldCoefficient, int newCoefficient) = 0;
+		virtual bool ChangeCoefficient(int exponent, int newCoefficient) = 0;
 
 };
 #endif
