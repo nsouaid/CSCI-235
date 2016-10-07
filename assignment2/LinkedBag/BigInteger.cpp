@@ -305,18 +305,24 @@ bool BigInteger<ItemType>::ChangeCoefficient(int exponent, int newCoefficient) {
 		Node<ItemType> * travelptr = head_ptr_;
 
 	//while not end of list
-		while (travelptr->GetNext() != nullptr) {
-		//if we find the exponent, set the coefficient to new
+		while (travelptr != nullptr) {
+		//if the coefficient in the node equals the given coefficient, then return true, no need to change it			
+			if (travelptr->GetCoefficient() == newCoefficient) {
+				cout<<"Coefficients are the same."<<endl;					
+				return true;
+			}
+
+		//if we find the exponent, set the old coefficient to new coefficient
 			if (travelptr->GetExponent() == exponent) {
+				cout << "Your coefficient has been changed." << endl;
 				travelptr->SetCoefficient(newCoefficient);
 				return true;
 			}
 		//advance pointer
 			travelptr = travelptr->GetNext();
 		}
-
 		return true;
-}
+}head_ptr_
 
 //---------------------------------------------------------------------------------------------------------------------------------------------
 
