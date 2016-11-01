@@ -1,8 +1,12 @@
-/ ** @file SudokuSolver.h */
+/** @file SudokuSolver.h */
 #ifndef _SUDOKU_SOLVER
 #define _SUDOKU_SOLVER
 
-class SudokuSolver {
+#include "SudokuInterface.h"
+#include "LinkedStack.h"
+
+template<class ItemType>
+class SudokuSolver : public SudokuInterface<ItemType> {
 
 	private:
 	
@@ -14,11 +18,15 @@ class SudokuSolver {
 	int getMissingInRow(int row);
 	int getMissingInColumn(int column);
 	bool readInputFile(string filename);
-	LinkedStack<int> stack;
+	LinkedStack<int> theStack;
+	int theArray[10][10];
 
 	public:
 
-
-
-
+	SudokuSolver(string filename);
+	bool SolvePuzzle(int maxBackSteps);
+	void DisplayPuzzle();
 };
+
+#include "SudokuSolver.cpp"
+#endif

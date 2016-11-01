@@ -1,7 +1,7 @@
 /** @file StackInterface.h */
 
-#ifndef TEACH_CSCI235_STACKADT_STACKINTERFACE_H
-#define TEACH_CSCI235_STACKADT_STACKINTERFACE_H
+#ifndef STACKINTERFACE_H
+#define STACKINTERFACE_H
 
 template<class ItemType>
 class StackInterface {

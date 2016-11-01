@@ -2,8 +2,8 @@
     Listing 7-3.
     @file LinkedStack.h */
  
-#ifndef TEACH_CSCI235_STACKADT_LINKEDSTACK_H
-#define TEACH_CSCI235_STACKADT_LINKEDSTACK_H
+#ifndef _LINKEDSTACK_H
+#define _LINKEDSTACK_H
 
 #include "StackInterface.h"
 #include "Node.h"
