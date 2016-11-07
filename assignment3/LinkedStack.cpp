@@ -3,11 +3,11 @@
 
 #include <cassert>        // For assert
 #include "LinkedStack.h"  // Header file
-#include "Node.h"
 
 template<class ItemType>
 LinkedStack<ItemType>::LinkedStack() : top_ptr_(nullptr) {
 }  // end default constructor
+
 
 template<class ItemType>
 LinkedStack<ItemType>::LinkedStack(const LinkedStack<ItemType>& a_stack) {

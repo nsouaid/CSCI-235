@@ -6,7 +6,7 @@
 #include <cstddef>
 #include <fstream>
 #include <string>
-
+#include <vector>
 using namespace std;
 
 //private:
@@ -48,6 +48,8 @@ int SudokuSolver<ItemType>::getMissingInBox(int row, int column) {
 	//create an array to hold the digits to check
 	int theDigits[] = {1,2,3,4,5,6,7,8,9};
 
+	//obtain the beginning of the box that we are getting the numbers of
+	getStartOfBoxCoordinates(row, column);
 
 	//from the first row to the last
 	for (int p = 1; p < 4; p++) {
@@ -162,22 +164,17 @@ bool SudokuSolver<ItemType>::readInputFile(string filename) {
 
 	ifstream Fin(filename);
 	int x;
-	int row = 1;
 
 	if (Fin.is_open()) {
 
-		//while the file has not reached its end
-		while (!Fin.eof()) {
-		
+		for (int j = 1; j < 10; j++) {
 			//loop through each square in the grid
 			for(int i = 1; i <10; i++) {
 				//obtain digit from file
 				Fin >> x;
 				//place in the array position
-				theArray[row][i] = x;
+				theArray[j][i] = x;
 			}
-			//increment row
-			row++;
 		}
 	}
 	//close the file that Fin opened
@@ -211,16 +208,148 @@ SudokuSolver<ItemType>::SudokuSolver(string filename) {
 
 template <class ItemType>
 bool SudokuSolver<ItemType>::SolvePuzzle(int maxBackSteps) {
-return false;
+
+	LinkedStack<int> theNumbersToTry(possibleDigits(5,2));
+
+
+return true;
 }
 
 template<class ItemType>
 void SudokuSolver<ItemType>::DisplayPuzzle() {
+
+	cout << endl << "Your completed puzzle!:" << endl;
+	cout << endl;
 	for (int i = 1; i < 10; i++) {
 		for (int j=1; j <10; j++) {
-			cout << theArray[i][j] << " ";
+			cout << theArray[i][j];
+			if (j %3 == 0) {
+				cout << " ";
+			}
+		}
+		if (i% 3 ==0 ) {
+			cout << endl;
 		}
 		cout << endl;
 	}
 }
 
+
+template<class ItemType>
+LinkedStack<int> SudokuSolver<ItemType>::possibleDigits(int row, int column) {
+
+	//for holding the int values
+	int c, r, b, temp;
+	//for storing the common digits
+	int c_size, r_size, b_size;
+	LinkedStack<int> commons;
+
+	//obtain the number
+	c = getMissingInColumn(column);
+	r = getMissingInRow(row);
+	b = getMissingInBox(row, column);
+
+	//obtain the size of each array
+	c_size = arraycount(c);
+	r_size = arraycount(r);
+	b_size = arraycount(b);
+
+	//create the array
+	int c_array[c_size];
+	int r_array[r_size];
+	int b_array[b_size];
+
+	//place value
+	createArray(c_array, c_size, c);
+	createArray(r_array, r_size, r);
+	createArray(b_array, b_size, b);
+
+	//check all three arrays to see which are all three common
+	for (int i = 0; i < c_size; i++) {
+		for (int j = 0; j < r_size; j++) {
+			for (int k = 0; k < b_size; k++) {
+				if ((c_array[i] == r_array[j]) && (c_array[i] == b_array[k])) {
+					//get the number
+					temp = c_array[i];
+
+					//Push it in the return stack
+					commons.Push(temp);
+				}
+			}
+		}		
+	}
+
+return commons;
+}
+
+template<class ItemType>
+int SudokuSolver<ItemType>::arraycount(int number){
+
+	int digitcount=0;
+	while (number !=0) {
+		number= number /10;
+		digitcount++;
+	}
+
+	return digitcount;
+}
+
+
+template<class ItemType>
+void SudokuSolver<ItemType>::createArray(int thearray[], int size, int num) {
+
+	int value=0, i=0, remaining = 9;
+
+	//while we have a number that has digits
+	while (num !=0) {
+		//obtain a digit
+		value = num % 10;
+
+		//cast off that same digit
+		num = num / 10;
+
+		//put in the array
+		thearray[i] = value;
+
+		//move to next index
+		i++;
+
+		//reduce remaining cells in the array
+		remaining--;
+	}
+
+	//if we have cells left in the array, 
+	if (remaining > 0) {
+		for (int j =i; j < remaining; j++) {
+			thearray[j] = 0;
+		}
+	}
+}
+
+
+
+template<class ItemType>
+void SudokuSolver<ItemType>::getStartOfBoxCoordinates(int& row, int& column) {
+
+	//while the row is not equal to the end equivalent of its box
+	while ((row % 3) != 0) {
+		row++;
+	}
+
+	//while the column is not equal to the end equivalent of its box
+	while ((column % 3) != 0) {
+		column++;
+	}
+
+	row = row - 2;
+	column = column - 2;
+}
+
+/*
+template<class ItemType>
+int SudokuSolver<ItemType>::convertToIndex(int row, int column) {
+
+
+
+}
+*/

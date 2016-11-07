@@ -38,7 +38,7 @@ LIBS_ALL =  -L/usr/lib -L/usr/local/lib $(MATH_LIBS)
 
 
 #FIRST PROGRAM
-ALL_OBJ1= sudomain.o
+ALL_OBJ1= PreconditionViolatedException.o sudomain.o
 PROGRAM_1=test
 $(PROGRAM_1): $(ALL_OBJ1)
 	g++ $(C++FLAG) -o $(EXEC_DIR)/$@ $(ALL_OBJ1) $(INCLUDES) $(LIBS_ALL)

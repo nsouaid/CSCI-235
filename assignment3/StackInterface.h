@@ -29,5 +29,6 @@ class StackInterface {
 	the stack is unchanged.
 	@return The top of the stack. */
 	virtual ItemType Peek() const = 0;
+
 };
 #endif

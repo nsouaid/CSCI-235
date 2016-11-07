@@ -1,5 +1,5 @@
 /** Listing 7-5.
-    @file PrecondViolatedExcep.h */
+    @file PreconditionViolatedException.h */
 
 #ifndef TEACH_CSCI235_STACKADT__PRECONDITIONVIOLATEDEXCEPTION_H
 #define TEACH_CSCI235_STACKADT__PRECONDITIONVIOLATEDEXCEPTION_H

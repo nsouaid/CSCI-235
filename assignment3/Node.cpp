@@ -39,3 +39,4 @@ template<class ItemType>
 Node<ItemType>* Node<ItemType>::GetNext() const {
 	return next_node_;
 }
+
