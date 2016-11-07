@@ -36,7 +36,19 @@ return false;
 template<class ItemType>
 int SudokuSolver<ItemType>::nextEmpty() {
 
-return 2;
+int count=0;
+
+	for (int i =1; i < 10; i++) {
+		for (int j =1; j <10; j++) {
+			count++;
+			if (theArray[i][j] == 0) {
+				return count;
+			}
+		}
+	}
+
+
+return 0;
 }
 
 template<class ItemType>
@@ -208,6 +220,8 @@ SudokuSolver<ItemType>::SudokuSolver(string filename) {
 
 template <class ItemType>
 bool SudokuSolver<ItemType>::SolvePuzzle(int maxBackSteps) {
+
+	cout << nextEmpty();
 
 	LinkedStack<int> theNumbersToTry(possibleDigits(5,2));
 
