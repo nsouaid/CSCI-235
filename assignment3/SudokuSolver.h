@@ -27,8 +27,11 @@ class SudokuSolver : public SudokuInterface<ItemType> {
 	int getMissingInRow(int row);
 	int getMissingInColumn(int column);
 
+	int convertToRow(int index);
+	int convertToColumn(int index);
 	bool readInputFile(string filename);
-	LinkedStack<int> theStack;
+	LinkedStack<int> stack;
+	LinkedStack<int> indexstack;
 	int theArray[10][10];
 
 	public:

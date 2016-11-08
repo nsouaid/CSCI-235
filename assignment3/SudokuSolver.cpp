@@ -2,37 +2,127 @@
 
 #include "SudokuSolver.h"
 #include "LinkedStack.h"
-
 #include <cstddef>
 #include <fstream>
 #include <string>
 #include <vector>
 using namespace std;
 
-//private:
+
+//private -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------------------------------------------------------------------------
 template<class ItemType>
 bool SudokuSolver<ItemType>::insert(int number, int row, int column) {
 
+	//push the number to the main stack 
+	stack.Push(number);
+
+	//put that number in the array
 	theArray[row][column] = number;
-	theStack.Push(number);
+
+	//check for invalid entries
+
 	return true;
 }
 
+template <class ItemType>
+bool SudokuSolver<ItemType>::SolvePuzzle(int maxBackSteps) {
+
+	while (maxBackSteps != 0) {
+		
+		int row, column, n;
+		int index = nextEmpty();
+
+		//if we didn't find an index with a 0 then return puzzle solved
+		if (index == 0) {
+			cout << "Puzzle Solved" << endl;
+			return true;
+		}
+
+		//otherwise follow theses steps
+		else {
+
+			row = convertToRow(index);
+			column = convertToColumn(index);
+
+			//create a temporary stack to try all the numbers
+			LinkedStack<int> theNumbersToTry(possibleDigits(row,column));
+
+			if (theNumbersToTry.IsEmpty()) {
+				
+				//this is where we backtrack - because the numberstotry is empty, meaning it doesn't work.	
+				goBack();
+			}
+
+			else {
+
+				//while the numbers to try is not empty
+				while (!theNumbersToTry.IsEmpty()) {
+
+						if (stack.IsEmpty()) {
+							n = theNumbersToTry.Peek();
+							theNumbersToTry.Pop();
+							insert(n, row, column);
+						}
+			
+						//if the number in the numberstotry is greater than what's in the stack
+						else if (theNumbersToTry.Peek() > stack.Peek()) {
+					
+							//then pop what's on the stack and insert the new number
+							stack.Pop();
+				
+							//obtain the number from the stack
+							n = theNumbersToTry.Peek();
+
+							//remove from the stack();
+							theNumbersToTry.Pop();
+
+							//and the index
+							insert(n, row, column);
+						}
+				}		
+			}
+		
+		}
+
+		maxBackSteps--;
+	}
+	return true;
+}
+
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------------
 template<class ItemType>
 bool SudokuSolver<ItemType>::remove(int row, int column) {
 
 	theArray[row][column] = 0;
 	//ifnotempy needed here?
-	theStack.Pop();
+	indexstack.Pop();
 	return true;
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------
 template<class ItemType>
 bool SudokuSolver<ItemType>::goBack() {
+
+	int index, row, column;
+
+	//find the index
+	index = indexstack.Peek();
+
+	//convert to row and column
+	row = convertToRow(index);
+	column = convertToColumn(index);
+
+	//delete that row and column (from the array and the indexstack)
+	remove(row,column);
 	
 return false;
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------
 template<class ItemType>
 int SudokuSolver<ItemType>::nextEmpty() {
 
@@ -42,15 +132,18 @@ int count=0;
 		for (int j =1; j <10; j++) {
 			count++;
 			if (theArray[i][j] == 0) {
+
+				//place the index number in the indexstack
+				indexstack.Push(count);
 				return count;
 			}
 		}
 	}
 
-
 return 0;
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------
 template<class ItemType>
 int SudokuSolver<ItemType>::getMissingInBox(int row, int column) {
 
@@ -95,6 +188,7 @@ int SudokuSolver<ItemType>::getMissingInBox(int row, int column) {
 
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------
 template<class ItemType>
 int SudokuSolver<ItemType>::getMissingInRow(int row) {
 
@@ -133,6 +227,7 @@ int SudokuSolver<ItemType>::getMissingInRow(int row) {
 	return retval;
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------
 template<class ItemType>
 int SudokuSolver<ItemType>::getMissingInColumn(int column) {
 
@@ -171,6 +266,7 @@ int SudokuSolver<ItemType>::getMissingInColumn(int column) {
 	return retval;
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------
 template<class ItemType>
 bool SudokuSolver<ItemType>::readInputFile(string filename) {
 
@@ -194,61 +290,7 @@ bool SudokuSolver<ItemType>::readInputFile(string filename) {
 	return true;
 }
 
-template <class ItemType>
-SudokuSolver<ItemType>::SudokuSolver(string filename) {
-
-	readInputFile(filename);
-
-}
-
-/*
-391	286	574
-487	359	126
-652	714	839
-
-875	431	692
-213	967	485
-964	528	713
-
-149	673	258
-538	142	967
-726	895	341
-*/
-
-//public:
-
-
-template <class ItemType>
-bool SudokuSolver<ItemType>::SolvePuzzle(int maxBackSteps) {
-
-	cout << nextEmpty();
-
-	LinkedStack<int> theNumbersToTry(possibleDigits(5,2));
-
-
-return true;
-}
-
-template<class ItemType>
-void SudokuSolver<ItemType>::DisplayPuzzle() {
-
-	cout << endl << "Your completed puzzle!:" << endl;
-	cout << endl;
-	for (int i = 1; i < 10; i++) {
-		for (int j=1; j <10; j++) {
-			cout << theArray[i][j];
-			if (j %3 == 0) {
-				cout << " ";
-			}
-		}
-		if (i% 3 ==0 ) {
-			cout << endl;
-		}
-		cout << endl;
-	}
-}
-
-
+//------------------------------------------------------------------------------------------------------------------------------------------------
 template<class ItemType>
 LinkedStack<int> SudokuSolver<ItemType>::possibleDigits(int row, int column) {
 
@@ -257,6 +299,7 @@ LinkedStack<int> SudokuSolver<ItemType>::possibleDigits(int row, int column) {
 	//for storing the common digits
 	int c_size, r_size, b_size;
 	LinkedStack<int> commons;
+	LinkedStack<int> tempStack;
 
 	//obtain the number
 	c = getMissingInColumn(column);
@@ -284,18 +327,30 @@ LinkedStack<int> SudokuSolver<ItemType>::possibleDigits(int row, int column) {
 			for (int k = 0; k < b_size; k++) {
 				if ((c_array[i] == r_array[j]) && (c_array[i] == b_array[k])) {
 					//get the number
+
+					cout << c_array[i]<< endl;
 					temp = c_array[i];
 
-					//Push it in the return stack
-					commons.Push(temp);
+					//Push it in the "return" stack - NOTE: this stack is ordered from smallest at the bottom to largest on top
+					tempStack.Push(temp);
 				}
 			}
 		}		
 	}
 
+
+	//put the stack in order
+	while (!tempStack.IsEmpty()) {
+		//transfer the data to the return stack
+		commons.Push(tempStack.Peek());
+		//be sure to remove from tempStack so it becomes empty!
+		tempStack.Pop();
+	}
+
 return commons;
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------
 template<class ItemType>
 int SudokuSolver<ItemType>::arraycount(int number){
 
@@ -308,7 +363,25 @@ int SudokuSolver<ItemType>::arraycount(int number){
 	return digitcount;
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------
+template<class ItemType>
+void SudokuSolver<ItemType>::getStartOfBoxCoordinates(int& row, int& column) {
 
+	//while the row is not equal to the end equivalent of its box
+	while ((row % 3) != 0) {
+		row++;
+	}
+
+	//while the column is not equal to the end equivalent of its box
+	while ((column % 3) != 0) {
+		column++;
+	}
+
+	row = row - 2;
+	column = column - 2;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------------
 template<class ItemType>
 void SudokuSolver<ItemType>::createArray(int thearray[], int size, int num) {
 
@@ -340,30 +413,65 @@ void SudokuSolver<ItemType>::createArray(int thearray[], int size, int num) {
 	}
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------
+template <class ItemType>
+SudokuSolver<ItemType>::SudokuSolver(string filename) {
 
-
-template<class ItemType>
-void SudokuSolver<ItemType>::getStartOfBoxCoordinates(int& row, int& column) {
-
-	//while the row is not equal to the end equivalent of its box
-	while ((row % 3) != 0) {
-		row++;
-	}
-
-	//while the column is not equal to the end equivalent of its box
-	while ((column % 3) != 0) {
-		column++;
-	}
-
-	row = row - 2;
-	column = column - 2;
-}
-
-/*
-template<class ItemType>
-int SudokuSolver<ItemType>::convertToIndex(int row, int column) {
-
-
+	readInputFile(filename);
 
 }
-*/
+
+//------------------------------------------------------------------------------------------------------------------------------------------------
+template<class ItemType>
+int SudokuSolver<ItemType>::convertToRow(int index) {
+
+	int row;
+
+	//for the row:
+	row = (((index-1)/(9))+(1));
+
+return row;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------------
+template<class ItemType>
+int SudokuSolver<ItemType>::convertToColumn(int index) {
+
+	int column;
+
+	//for the column:
+
+	if( index % 9 == 0) {
+		column = 9;
+	}
+
+	else column = index % 9;
+
+return column;
+}
+
+
+//public -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------------
+template<class ItemType>
+void SudokuSolver<ItemType>::DisplayPuzzle() {
+
+	cout << endl << "Your completed puzzle!:" << endl;
+	cout << endl;
+	for (int i = 1; i < 10; i++) {
+		for (int j=1; j <10; j++) {
+			cout << theArray[i][j];
+			if (j %3 == 0) {
+				cout << " ";
+			}
+		}
+		if (i% 3 ==0 ) {
+			cout << endl;
+		}
+		cout << endl;
+	}
+}
