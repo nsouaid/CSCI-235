@@ -7,7 +7,7 @@ int main() {
 
 	SudokuSolver<int>mySudoku("sudokutry1.txt");
 
-	mySudoku.SolvePuzzle(100);
+	mySudoku.SolvePuzzle(1);
 	mySudoku.DisplayPuzzle();
 	return 0;
 }

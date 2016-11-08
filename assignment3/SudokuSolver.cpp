@@ -29,7 +29,7 @@ bool SudokuSolver<ItemType>::insert(int number, int row, int column) {
 template <class ItemType>
 bool SudokuSolver<ItemType>::SolvePuzzle(int maxBackSteps) {
 
-	while (maxBackSteps != 0) {
+while (maxBackSteps !=0) {
 		
 		int row, column, n;
 		int index = nextEmpty();
@@ -41,10 +41,14 @@ bool SudokuSolver<ItemType>::SolvePuzzle(int maxBackSteps) {
 		}
 
 		//otherwise follow theses steps
-		else {
+		if (index !=0) {
 
+			cout << "how many times" << endl;
 			row = convertToRow(index);
 			column = convertToColumn(index);
+
+			cout << row << endl;
+			cout << column << endl;
 
 			//create a temporary stack to try all the numbers
 			LinkedStack<int> theNumbersToTry(possibleDigits(row,column));
@@ -62,26 +66,30 @@ bool SudokuSolver<ItemType>::SolvePuzzle(int maxBackSteps) {
 
 						if (stack.IsEmpty()) {
 							n = theNumbersToTry.Peek();
+							//remove from the stack();
 							theNumbersToTry.Pop();
 							insert(n, row, column);
 						}
 			
 						//if the number in the numberstotry is greater than what's in the stack
-						else if (theNumbersToTry.Peek() > stack.Peek()) {
+						if (!stack.IsEmpty() && !theNumbersToTry.IsEmpty()) {						
+				
+							if (theNumbersToTry.Peek() > stack.Peek()) {
 					
+							n = theNumbersToTry.Peek();
+							theNumbersToTry.Pop();
+
 							//then pop what's on the stack and insert the new number
 							stack.Pop();
 				
-							//obtain the number from the stack
-							n = theNumbersToTry.Peek();
-
-							//remove from the stack();
-							theNumbersToTry.Pop();
-
 							//and the index
 							insert(n, row, column);
-						}
-				}		
+							}
+							else {
+								theNumbersToTry.Pop();
+							}
+						}		
+				}
 			}
 		
 		}
@@ -316,19 +324,51 @@ LinkedStack<int> SudokuSolver<ItemType>::possibleDigits(int row, int column) {
 	int r_array[r_size];
 	int b_array[b_size];
 
+
+	cout << "c size: " << c_size << endl;
+	cout << "c:" << c << endl;
+
+	cout << "r size: " << r_size << endl;
+	cout << "r:" << r << endl;
+
+	cout << "b size: " << b_size << endl;
+	cout << "b:" << b << endl;
+
+
+
 	//place value
 	createArray(c_array, c_size, c);
 	createArray(r_array, r_size, r);
 	createArray(b_array, b_size, b);
 
+
+	for (int i =0; i < c_size; i++) {
+
+		cout << "c" << c_array[i];
+	}
+	cout << endl;
+	for (int i =0; i < r_size; i++) {
+
+		cout << "r" << r_array[i];
+	}
+	cout << endl;
+	for (int i =0; i < b_size; i++) {
+
+		cout << "b" << b_array[i];
+	}
+	cout << endl;
+	
+
+
+
 	//check all three arrays to see which are all three common
 	for (int i = 0; i < c_size; i++) {
 		for (int j = 0; j < r_size; j++) {
 			for (int k = 0; k < b_size; k++) {
-				if ((c_array[i] == r_array[j]) && (c_array[i] == b_array[k])) {
+				//if there is a common number among all the arrays
+				if ((c_array[i] == r_array[j])  && (r_array[j]== b_array[k])) {
 					//get the number
 
-					cout << c_array[i]<< endl;
 					temp = c_array[i];
 
 					//Push it in the "return" stack - NOTE: this stack is ordered from smallest at the bottom to largest on top
