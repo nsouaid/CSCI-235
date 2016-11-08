@@ -22,6 +22,7 @@ bool SudokuSolver<ItemType>::insert(int number, int row, int column) {
 	theArray[row][column] = number;
 
 	//check for invalid entries
+	
 
 	return true;
 }
@@ -29,18 +30,22 @@ bool SudokuSolver<ItemType>::insert(int number, int row, int column) {
 template <class ItemType>
 bool SudokuSolver<ItemType>::SolvePuzzle(int maxBackSteps) {
 
+//do this until the end
 	while (maxBackSteps != 0) {
 		
+//declare a row and column and number variable
 		int row, column, n;
+
+//get the nextempty 0
 		int index = nextEmpty();
 
-		//if we didn't find an index with a 0 then return puzzle solved
+//if we didn't find an index with a 0 then return puzzle solved
 		if (index == 0) {
 			cout << "Puzzle Solved" << endl;
 			return true;
 		}
 
-		//otherwise follow theses steps
+//otherwise follow theses steps : TRYING A SQUARE WITH A 0:
 		if (index !=0) {
 
 			cout << "how many times" << endl;
@@ -50,56 +55,47 @@ bool SudokuSolver<ItemType>::SolvePuzzle(int maxBackSteps) {
 			cout << row << endl;
 			cout << column << endl;
 
-			//create a temporary stack to try all the numbers
+//create a temporary stack to try all the numbers : NUMBERS THAT GO WITH A SQUARE
 			LinkedStack<int> theNumbersToTry(possibleDigits(row,column));
 
+//CASE 1: THERE ARE NO NUMBERS WITH THAT SQUARE
 			if (theNumbersToTry.IsEmpty()) {
 				
-				//this is where we backtrack - because the numberstotry is empty, meaning it doesn't work.	
+//this is where we backtrack - because the numberstotry is empty, meaning it doesn't work. (INDEXSTACK top IS REMOVED, ARRAY IS REMOVED, STACK top IS REMOVED, comparestack gets its number from stack)
 				goBack();
 			}
-
+//CASE 2: THERE ARE NUMBERS THAT BELONG TO THE SQUARE
+//WHICH MEANS EITHER it's coming from past - what is in the stack is the previous cell
+//or coming from a future cell - is what we should be trying
 			else {
 
-				//while the numbers to try is not empty
-				while (!theNumbersToTry.IsEmpty()) {
-
-						if (stack.IsEmpty()) {
+//if the compare stack has some item in it we can compare to try the next number
+				if (!comparestack.IsEmpty()) {
+					while (!theNumbersToTry.IsEmpty() && !comparestack.IsEmpty()) {
+						if ( theNumbersToTry.Peek() > comparestack.Peek()){
 							n = theNumbersToTry.Peek();
-							//remove from the;
-							theNumbersToTry.Pop();
-							insert(n, row, column);
-							cout << "GOT TO HERE" << endl;
+							//INSERTS TO ARRAY, and STACK
+							insert (n, row, column);
+							//start a blank slate with comparestack
+							comparestack.Pop();
 						}
-			
-						//if the number in the numberstotry is greater than what's in the stack
-						if (!stack.IsEmpty()) {
-				
-							while (!theNumbersToTry.IsEmpty()) {					
-				
-								if (theNumbersToTry.Peek() < stack.Peek()) {
-									n = theNumbersToTry.Peek();
-									theNumbersToTry.Pop();
-
-									//then pop what's on the stack and insert the new number
-									stack.Pop();
-				
-									//and the index
-									insert(n, row, column);
-								}
-								else {
-									theNumbersToTry.Pop();
-								}
-							}
-						}		
+					}
 				}
-			}
-		
-		}
+				else {
 
+					n = theNumbersToTry.Peek();
+					insert(n, row, column);
+					cout << "GOT TO HERE" << endl;
+				}
+			
+	
+			}
+							
+		}
 		maxBackSteps--;
 	}
 	return true;
+
 }
 
 
@@ -109,8 +105,8 @@ template<class ItemType>
 bool SudokuSolver<ItemType>::remove(int row, int column) {
 
 	theArray[row][column] = 0;
-	//ifnotempy needed here?
-	indexstack.Pop();
+	comparestack.Push(stack.Peek());
+	stack.Pop();	
 	return true;
 }
 
@@ -122,12 +118,13 @@ bool SudokuSolver<ItemType>::goBack() {
 
 	//find the index
 	index = indexstack.Peek();
+	indexstack.Pop();
 
 	//convert to row and column
 	row = convertToRow(index);
 	column = convertToColumn(index);
 
-	//delete that row and column (from the array and the indexstack)
+	//delete that row and column (from the array)
 	remove(row,column);
 	
 return false;
@@ -344,20 +341,22 @@ LinkedStack<int> SudokuSolver<ItemType>::possibleDigits(int row, int column) {
 	createArray(r_array, r_size, r);
 	createArray(b_array, b_size, b);
 
-
+	cout << "c: ";
 	for (int i =0; i < c_size; i++) {
 
-		cout << "c" << c_array[i];
+		cout << c_array[i];
 	}
 	cout << endl;
+	cout << "r: ";
 	for (int i =0; i < r_size; i++) {
 
-		cout << "r" << r_array[i];
+		cout << r_array[i];
 	}
 	cout << endl;
+	cout << "b: ";
 	for (int i =0; i < b_size; i++) {
 
-		cout << "b" << b_array[i];
+		cout << b_array[i];
 	}
 	cout << endl;
 	
@@ -381,13 +380,17 @@ LinkedStack<int> SudokuSolver<ItemType>::possibleDigits(int row, int column) {
 		}		
 	}
 
-
-	//put the stack in order
-	while (!tempStack.IsEmpty()) {
-		//transfer the data to the return stack
-		commons.Push(tempStack.Peek());
-		//be sure to remove from tempStack so it becomes empty!
-		tempStack.Pop();
+	if (tempStack.IsEmpty()) {
+		cout << "this stack is empty!" << endl;
+	}
+	else {
+		//put the stack in order
+		while (!tempStack.IsEmpty()) {
+			//transfer the data to the return stack
+			commons.Push(tempStack.Peek());
+			//be sure to remove from tempStack so it becomes empty!
+			tempStack.Pop();
+		}
 	}
 
 return commons;

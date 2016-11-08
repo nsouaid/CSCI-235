@@ -14,24 +14,21 @@ class SudokuSolver : public SudokuInterface<ItemType> {
 	bool remove(int row, int column);
 	bool goBack();
 	int nextEmpty();
-	void getStartOfBoxCoordinates(int& row, int& column);
-
-	int arraycount(int number);
-
-	void createArray(int thearray[], int size, int num);
-
-
-	LinkedStack<int> possibleDigits(int row, int column);
-
-	int getMissingInBox(int row, int column);
 	int getMissingInRow(int row);
 	int getMissingInColumn(int column);
+	int getMissingInBox(int row, int column);
+	bool readInputFile(string filename);
 
+	void getStartOfBoxCoordinates(int& row, int& column);
+	int arraycount(int number);
+	void createArray(int thearray[], int size, int num);
+	LinkedStack<int> possibleDigits(int row, int column);
 	int convertToRow(int index);
 	int convertToColumn(int index);
-	bool readInputFile(string filename);
+
 	LinkedStack<int> stack;
 	LinkedStack<int> indexstack;
+	LinkedStack<int> comparestack;
 	int theArray[10][10];
 
 	public:
