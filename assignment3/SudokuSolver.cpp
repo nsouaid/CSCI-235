@@ -29,7 +29,7 @@ bool SudokuSolver<ItemType>::insert(int number, int row, int column) {
 template <class ItemType>
 bool SudokuSolver<ItemType>::SolvePuzzle(int maxBackSteps) {
 
-while (maxBackSteps !=0) {
+	while (maxBackSteps != 0) {
 		
 		int row, column, n;
 		int index = nextEmpty();
@@ -66,27 +66,30 @@ while (maxBackSteps !=0) {
 
 						if (stack.IsEmpty()) {
 							n = theNumbersToTry.Peek();
-							//remove from the stack();
+							//remove from the;
 							theNumbersToTry.Pop();
 							insert(n, row, column);
+							cout << "GOT TO HERE" << endl;
 						}
 			
 						//if the number in the numberstotry is greater than what's in the stack
-						if (!stack.IsEmpty() && !theNumbersToTry.IsEmpty()) {						
+						if (!stack.IsEmpty()) {
 				
-							if (theNumbersToTry.Peek() > stack.Peek()) {
-					
-							n = theNumbersToTry.Peek();
-							theNumbersToTry.Pop();
+							while (!theNumbersToTry.IsEmpty()) {					
+				
+								if (theNumbersToTry.Peek() < stack.Peek()) {
+									n = theNumbersToTry.Peek();
+									theNumbersToTry.Pop();
 
-							//then pop what's on the stack and insert the new number
-							stack.Pop();
+									//then pop what's on the stack and insert the new number
+									stack.Pop();
 				
-							//and the index
-							insert(n, row, column);
-							}
-							else {
-								theNumbersToTry.Pop();
+									//and the index
+									insert(n, row, column);
+								}
+								else {
+									theNumbersToTry.Pop();
+								}
 							}
 						}		
 				}
@@ -370,7 +373,7 @@ LinkedStack<int> SudokuSolver<ItemType>::possibleDigits(int row, int column) {
 					//get the number
 
 					temp = c_array[i];
-
+					cout << "what's in temp currently: " << temp << endl;
 					//Push it in the "return" stack - NOTE: this stack is ordered from smallest at the bottom to largest on top
 					tempStack.Push(temp);
 				}
@@ -425,10 +428,10 @@ void SudokuSolver<ItemType>::getStartOfBoxCoordinates(int& row, int& column) {
 template<class ItemType>
 void SudokuSolver<ItemType>::createArray(int thearray[], int size, int num) {
 
-	int value=0, i=0, remaining = 9;
+	int value=0;
 
 	//while we have a number that has digits
-	while (num !=0) {
+	for (int y = 0; y <size; y++) {
 		//obtain a digit
 		value = num % 10;
 
@@ -436,20 +439,7 @@ void SudokuSolver<ItemType>::createArray(int thearray[], int size, int num) {
 		num = num / 10;
 
 		//put in the array
-		thearray[i] = value;
-
-		//move to next index
-		i++;
-
-		//reduce remaining cells in the array
-		remaining--;
-	}
-
-	//if we have cells left in the array, 
-	if (remaining > 0) {
-		for (int j =i; j < remaining; j++) {
-			thearray[j] = 0;
-		}
+		thearray[y] = value;
 	}
 }
 
