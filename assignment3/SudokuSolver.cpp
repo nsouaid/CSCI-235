@@ -13,10 +13,13 @@ using namespace std;
 
 //------------------------------------------------------------------------------------------------------------------------------------------------
 template<class ItemType>
-bool SudokuSolver<ItemType>::insert(int number, int row, int column) {
+bool SudokuSolver<ItemType>::insert(int number, int row, int column, int index) {
 
 	//push the number to the main stack 
 	stack.Push(number);
+
+	//push the index in the indexstack
+	indexstack.Push(index);
 
 	//put that number in the array
 	theArray[row][column] = number;
@@ -47,13 +50,10 @@ bool SudokuSolver<ItemType>::SolvePuzzle(int maxBackSteps) {
 
 //otherwise follow theses steps : TRYING A SQUARE WITH A 0:
 		if (index !=0) {
-
-			cout << "how many times" << endl;
 			row = convertToRow(index);
 			column = convertToColumn(index);
 
-			cout << row << endl;
-			cout << column << endl;
+			cout << index << endl;
 
 //create a temporary stack to try all the numbers : NUMBERS THAT GO WITH A SQUARE
 			LinkedStack<int> theNumbersToTry(possibleDigits(row,column));
@@ -63,41 +63,67 @@ bool SudokuSolver<ItemType>::SolvePuzzle(int maxBackSteps) {
 				
 //this is where we backtrack - because the numberstotry is empty, meaning it doesn't work. (INDEXSTACK top IS REMOVED, ARRAY IS REMOVED, STACK top IS REMOVED, comparestack gets its number from stack)
 				goBack();
+				cout << "our first GOOOOOOO BACCCKKKKK!" << endl;
 			}
 //CASE 2: THERE ARE NUMBERS THAT BELONG TO THE SQUARE
 //WHICH MEANS EITHER it's coming from past - what is in the stack is the previous cell
 //or coming from a future cell - is what we should be trying
-			else {
+			else if (!theNumbersToTry.IsEmpty()){
 
 //if the compare stack has some item in it we can compare to try the next number
 				if (!comparestack.IsEmpty()) {
-					while (!theNumbersToTry.IsEmpty() && !comparestack.IsEmpty()) {
-						if ( theNumbersToTry.Peek() > comparestack.Peek()){
+
+					//if the trying number is LESS than COMPARE stack
+					if (theNumbersToTry.Peek() < comparestack.Peek()) {
+					
+						comparestack.Pop();
+						goBack();
+					}
+					//if the trying number is GREATER than COMPARE stack
+					else if (theNumbersToTry.Peek() > comparestack.Peek()) {
+								cout << "------------------------------------------------------------------case 2 (number is greater than COMPARE)" << endl;
 							n = theNumbersToTry.Peek();
 							//INSERTS TO ARRAY, and STACK
-							insert (n, row, column);
+							insert (n, row, column, index);
 							//start a blank slate with comparestack
 							comparestack.Pop();
-						}
 					}
-				}
-				else {
 
-					n = theNumbersToTry.Peek();
-					insert(n, row, column);
-					cout << "GOT TO HERE" << endl;
-				}
-			
+					else if (theNumbersToTry.Peek() == comparestack.Peek()) {
+								cout << "------------------------------------------------------------------case 3 (number is SAME)" << endl;
+						theNumbersToTry.Pop();
+
+						//2. there are greater numbers remaining to try	
+						if (!theNumbersToTry.IsEmpty()) {
+								cout << "------------------------------------------------------------------4: more numbers exist" << endl;
+							n =theNumbersToTry.Peek();
+							insert (n, row, column, index);
+							comparestack.Pop();
+						}
+						//2. that is the only data item in the numberstotry stack and should therefore GO BACK
+						if (theNumbersToTry.IsEmpty()) {
+								cout << "------------------------------------------------------------------5: second GO BACK!" << endl;
+							comparestack.Pop();
+							goBack();
+						}
 	
-			}
+					}
 							
+				}
+				//else the compare stack is empty.... so continue to add numbers
+				else {
+					n = theNumbersToTry.Peek();
+					insert (n, row, column, index);
+				}
+
+
+			}//
+
 		}
 		maxBackSteps--;
 	}
 	return true;
-
 }
-
 
 
 //------------------------------------------------------------------------------------------------------------------------------------------------
@@ -106,7 +132,9 @@ bool SudokuSolver<ItemType>::remove(int row, int column) {
 
 	theArray[row][column] = 0;
 	comparestack.Push(stack.Peek());
-	stack.Pop();	
+	indexstack.Pop();
+	stack.Pop();
+
 	return true;
 }
 
@@ -116,9 +144,8 @@ bool SudokuSolver<ItemType>::goBack() {
 
 	int index, row, column;
 
-	//find the index
+	//find the index of previous
 	index = indexstack.Peek();
-	indexstack.Pop();
 
 	//convert to row and column
 	row = convertToRow(index);
@@ -126,8 +153,8 @@ bool SudokuSolver<ItemType>::goBack() {
 
 	//delete that row and column (from the array)
 	remove(row,column);
-	
-return false;
+
+return true;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------
@@ -142,7 +169,6 @@ int count=0;
 			if (theArray[i][j] == 0) {
 
 				//place the index number in the indexstack
-				indexstack.Push(count);
 				return count;
 			}
 		}
@@ -306,7 +332,6 @@ LinkedStack<int> SudokuSolver<ItemType>::possibleDigits(int row, int column) {
 	int c, r, b, temp;
 	//for storing the common digits
 	int c_size, r_size, b_size;
-	LinkedStack<int> commons;
 	LinkedStack<int> tempStack;
 
 	//obtain the number
@@ -373,27 +398,14 @@ LinkedStack<int> SudokuSolver<ItemType>::possibleDigits(int row, int column) {
 
 					temp = c_array[i];
 					cout << "what's in temp currently: " << temp << endl;
-					//Push it in the "return" stack - NOTE: this stack is ordered from smallest at the bottom to largest on top
+					//Push it in the "return" stack
 					tempStack.Push(temp);
 				}
 			}
 		}		
 	}
 
-	if (tempStack.IsEmpty()) {
-		cout << "this stack is empty!" << endl;
-	}
-	else {
-		//put the stack in order
-		while (!tempStack.IsEmpty()) {
-			//transfer the data to the return stack
-			commons.Push(tempStack.Peek());
-			//be sure to remove from tempStack so it becomes empty!
-			tempStack.Pop();
-		}
-	}
-
-return commons;
+return tempStack;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------

@@ -10,7 +10,7 @@ class SudokuSolver : public SudokuInterface<ItemType> {
 
 	private:
 	
-	bool insert(int number, int row, int column);
+	bool insert(int number, int row, int column, int index);
 	bool remove(int row, int column);
 	bool goBack();
 	int nextEmpty();
