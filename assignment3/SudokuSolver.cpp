@@ -58,51 +58,78 @@ bool SudokuSolver<ItemType>::SolvePuzzle(int maxBackSteps) {
 //create a temporary stack to try all the numbers : NUMBERS THAT GO WITH A SQUARE
 			LinkedStack<int> theNumbersToTry(possibleDigits(row,column));
 
-//CASE 1: THERE ARE NO NUMBERS WITH THAT SQUARE
+			//CASE 1: THERE ARE NO NUMBERS WITH THAT SQUARE
 			if (theNumbersToTry.IsEmpty()) {
 				
-//this is where we backtrack - because the numberstotry is empty, meaning it doesn't work. (INDEXSTACK top IS REMOVED, ARRAY IS REMOVED, STACK top IS REMOVED, comparestack gets its number from stack)
+				//this is where we backtrack - because the numberstotry is empty, meaning it doesn't work.
 				goBack();
 				cout << "our first GOOOOOOO BACCCKKKKK!" << endl;
 			}
-//CASE 2: THERE ARE NUMBERS THAT BELONG TO THE SQUARE
-//WHICH MEANS EITHER it's coming from past - what is in the stack is the previous cell
-//or coming from a future cell - is what we should be trying
+
+			//CASE 2: THERE ARE NUMBERS THAT BELONG TO THE SQUARE
+			//WHICH MEANS EITHER it's coming from past - what is in the stack is the previous cell
+			//or coming from a future cell - is what we should be trying
 			else if (!theNumbersToTry.IsEmpty()){
 
-//if the compare stack has some item in it we can compare to try the next number
+				//if the compare stack has an item in it we can compare to try the next number
 				if (!comparestack.IsEmpty()) {
 
-					//if the trying number is LESS than COMPARE stack
+//number is < Compare
 					if (theNumbersToTry.Peek() < comparestack.Peek()) {
-					
-						comparestack.Pop();
-						goBack();
-					}
-					//if the trying number is GREATER than COMPARE stack
-					else if (theNumbersToTry.Peek() > comparestack.Peek()) {
-								cout << "------------------------------------------------------------------case 2 (number is greater than COMPARE)" << endl;
-							n = theNumbersToTry.Peek();
-							//INSERTS TO ARRAY, and STACK
-							insert (n, row, column, index);
-							//start a blank slate with comparestack
-							comparestack.Pop();
-					}
+						cout << "------------------------------------------------------------------case 1 (number is LESS than compare)" << endl;
+						cout << "compare: " << comparestack.Peek() << endl;
 
-					else if (theNumbersToTry.Peek() == comparestack.Peek()) {
-								cout << "------------------------------------------------------------------case 3 (number is SAME)" << endl;
-						theNumbersToTry.Pop();
-
-						//2. there are greater numbers remaining to try	
-						if (!theNumbersToTry.IsEmpty()) {
-								cout << "------------------------------------------------------------------4: more numbers exist" << endl;
-							n =theNumbersToTry.Peek();
-							insert (n, row, column, index);
-							comparestack.Pop();
+						while (!(theNumbersToTry.Peek() == comparestack.Peek())) {
+							if (!theNumbersToTry.IsEmpty()) {
+								theNumbersToTry.Pop();
+							}
 						}
-						//2. that is the only data item in the numberstotry stack and should therefore GO BACK
+
+						if (!theNumbersToTry.IsEmpty()) {
+							theNumbersToTry.Pop();
+						}
+
+						if (theNumbersToTry.IsEmpty()) {
+							cout << "------------------------------------------------------------------1:a empty stack, GO bAcK" << endl;
+							cout << "compare: " << comparestack.Peek() << endl;
+							comparestack.Pop();
+							goBack();
+						}
+						else {
+							cout << "------------------------------------------------------------------1:b insert to grid" << endl;
+							cout << "compare: " << comparestack.Peek() << endl;
+							comparestack.Pop();
+							n = theNumbersToTry.Peek();
+							insert (n, row, column, index);
+						}
+					}
+
+//number is == Compare
+					else if (theNumbersToTry.Peek() == comparestack.Peek()) {
+						cout << "------------------------------------------------------------------case 2 (number is SAME)" << endl;
+					cout << "compare: " << comparestack.Peek() << endl;
+
+							theNumbersToTry.Pop();
+						
+			//1. there are greater numbers remaining to try	
+						if (!theNumbersToTry.IsEmpty()) {
+								
+							cout << "------------------------------------------------------------------3: more numbers exist" << endl;
+					cout << "compare: " << comparestack.Peek() << endl;
+							if (theNumbersToTry.Peek() == comparestack.Peek()) {
+								goBack();
+							}
+							else {	
+								n =theNumbersToTry.Peek();
+								insert (n, row, column, index);
+								comparestack.Pop();
+							}
+						}
+
+			//2. that is the only data item in the numberstotry stack and should therefore GO BACK
 						if (theNumbersToTry.IsEmpty()) {
 								cout << "------------------------------------------------------------------5: second GO BACK!" << endl;
+					cout << "compare: " << comparestack.Peek() << endl;
 							comparestack.Pop();
 							goBack();
 						}
@@ -114,6 +141,7 @@ bool SudokuSolver<ItemType>::SolvePuzzle(int maxBackSteps) {
 				else {
 					n = theNumbersToTry.Peek();
 					insert (n, row, column, index);
+
 				}
 
 
