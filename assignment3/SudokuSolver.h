@@ -14,9 +14,9 @@ class SudokuSolver : public SudokuInterface<ItemType> {
 	bool remove(int row, int column);
 	bool goBack();
 	int nextEmpty();
+	int getMissingInBox(int row, int column);
 	int getMissingInRow(int row);
 	int getMissingInColumn(int column);
-	int getMissingInBox(int row, int column);
 	bool readInputFile(string filename);
 
 	void getStartOfBoxCoordinates(int& row, int& column);
